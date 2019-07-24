@@ -1,50 +1,49 @@
+The run_analysis.R script performs the data preparation and then followed by the 5 steps required as described in the course project.
 
+ Step 1.Dataset downloaded and extracted under the folder called UCI HAR Dataset
 
-The run_analysis.R script performs the data preparation and then followed by the 5 steps required as described in the course project’s definition.
-
-    Download the dataset
-        Dataset downloaded and extracted under the folder called UCI HAR Dataset
-
-    Assign each data to variables
+        Assign each data to variables
         features <- features.txt : 561 rows, 2 columns
         The features selected for this database come from the accelerometer and gyroscope 3-axial raw signals tAcc-XYZ and tGyro-XYZ.
-        activities <- activity_labels.txt : 6 rows, 2 columns
-        List of activities performed when the corresponding measurements were taken and its codes (labels)
-        subject_test <- test/subject_test.txt : 2947 rows, 1 column
+        activity.labels <- activity_labels.txt : 6 rows, 2 columns
+        List of activities performed when the corresponding measurements were taken
+        test.subject <- test/subject_test.txt : 2947 rows, 1 column
         contains test data of 9/30 volunteer test subjects being observed
-        x_test <- test/X_test.txt : 2947 rows, 561 columns
-        contains recorded features test data
-        y_test <- test/y_test.txt : 2947 rows, 1 columns
-        contains test data of activities’code labels
-        subject_train <- test/subject_train.txt : 7352 rows, 1 column
+        test.x <- test/X_test.txt : 2947 rows, 561 columns
+        contains recorded features test dat
+        test.y <- test/y_test.txt : 2947 rows, 1 columns
+        contains test data of activity labels
+        train.subject <- test/subject_train.txt : 7352 rows, 1 column
         contains train data of 21/30 volunteer subjects being observed
-        x_train <- test/X_train.txt : 7352 rows, 561 columns
-        contains recorded features train data
-        y_train <- test/y_train.txt : 7352 rows, 1 columns
+        train.x <- test/X_train.txt : 7352 rows, 561 columns
+        contains recorded train data
+        train.y <- test/y_train.txt : 7352 rows, 1 columns
         contains train data of activities’code labels
 
-    Merges the training and the test sets to create one data set
-        X (10299 rows, 561 columns) is created by merging x_train and x_test using rbind() function
-        Y (10299 rows, 1 column) is created by merging y_train and y_test using rbind() function
-        Subject (10299 rows, 1 column) is created by merging subject_train and subject_test using rbind() function
-        Merged_Data (10299 rows, 563 column) is created by merging Subject, Y and X using cbind() function
+        Creates the training and the test set dataframes and merge to create one data set
+        test.df (2947 rows, 563 columns) is created by including test.subject, test.y, test.x into one dataframe
+        train.df (7352 rows, 563 columns) is created by including train.subject, train.y, train.x into one dataframe
+        combine.df (10299 rows, 563 columns) is created by merging test.df and train.df using rbind() function
+        names(combined.df) is created yb merging "subject","activity" and features by using c function
+        
+Step 2. Extracts only the measurements on the mean and standard deviation for each measurement
+        Use grep function to locate the names(combined.df) that either contain mean or std 
+        Pick out those columns together with sbuject and activity to form the new combined.df (10299 rows, 81 columns)
 
-    Extracts only the measurements on the mean and standard deviation for each measurement
-        TidyData (10299 rows, 88 columns) is created by subsetting Merged_Data, selecting only columns: subject, code and the measurements on the mean and standard deviation (std) for each measurement
+Step 3. Uses descriptive activity names to name the activities in the data set
+        Update the activity column of combine.df with descriptive activity names based on activity.labels 
 
-    Uses descriptive activity names to name the activities in the data set
-        Entire numbers in code column of the TidyData replaced with corresponding activity taken from second column of the activities variable
+Step 4. Appropriately labels the data set with descriptive variable names
+        Remove "()" from variables names
+        Replace "-" with "_"
+        Replace starting "t" with "time_"
+        Replace starting "f" with "frequency_"
+        Replace "Acc" with "Accelerometer"
+        Replace "Gyro" with "Gyroscope"
+        Replace "Mag" with "Magnitude"
+        Replace "std" with "standarddeviation"
 
-    Appropriately labels the data set with descriptive variable names
-        code column in TidyData renamed into activities
-        All Acc in column’s name replaced by Accelerometer
-        All Gyro in column’s name replaced by Gyroscope
-        All BodyBody in column’s name replaced by Body
-        All Mag in column’s name replaced by Magnitude
-        All start with character f in column’s name replaced by Frequency
-        All start with character t in column’s name replaced by Time
-
-    From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject
-        FinalData (180 rows, 88 columns) is created by sumarizing TidyData taking the means of each variable for each activity and each subject, after groupped by subject and activity.
-        Export FinalData into FinalData.txt file.
+ Step 5.From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject
+        Use aggregate function to take the average of each column in combine.df
+        Use write.table function to write the data to "data.tidy.txt"
 

@@ -27,9 +27,12 @@ mean_std
 combine.df<-combine.df[,c(1,2,mean_std+2)]
 
 #3.Uses descriptive activity names to name the activities in the data set
-activity.labels<-read.table("./UCI HAR Dataset/activity_labels.txt",header=FALSE)
-activity.labels<-as.character(activity.labels[,2])
-combine.df$activity<-activity.labels[combine.df$activity]
+combine.df$activity<-gsub(1,"WALKING",combine.df$activity)
+combine.df$activity<-gsub(2,"WALKING_UPSTAIRS",combine.df$activity)
+combine.df$activity<-gsub(3,"WALKING_DOWNSTAIRS",combine.df$activity)
+combine.df$activity<-gsub(4,"SITTING",combine.df$activity)
+combine.df$activity<-gsub(5,"STANDING",combine.df$activity)
+combine.df$activity<-gsub(6,"LAYING",combine.df$activity)
 
 #4.Appropriately labels the data set with descriptive variable names.
 combine.name<-names(combine.df)
